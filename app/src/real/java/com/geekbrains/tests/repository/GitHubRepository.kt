@@ -5,8 +5,10 @@ import com.geekbrains.tests.presenter.RepositoryContract
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-class GitHubRepository(private val gitHubApi: GitHubApi) : RepositoryContract {
+class GitHubRepository(private val gitHubApi: GitHubApi = createRetrofit().create(GitHubApi::class.java)) : RepositoryContract {
 
     override fun searchGithub(
         query: String,
@@ -30,4 +32,11 @@ class GitHubRepository(private val gitHubApi: GitHubApi) : RepositoryContract {
             }
         })
     }
+}
+
+private fun createRetrofit(): Retrofit {
+    return Retrofit.Builder()
+        .baseUrl("https://api.github.com")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
 }
